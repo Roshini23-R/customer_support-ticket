@@ -1,0 +1,13 @@
+from fastapi.testclient import TestClient
+from app.main import app
+
+client = TestClient(app)
+
+def test_root():
+    r = client.get("/")
+    assert r.status_code == 200
+
+def test_ticket():
+    r = client.post("/api/ticket", json={"query": "i forgot my password"})
+    assert r.status_code == 200
+    assert "response" in r.json()

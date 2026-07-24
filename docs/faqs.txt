@@ -1,0 +1,8 @@
+Password reset:
+Users can reset their password from the login page using the Forgot Password link.
+
+Billing:
+If a customer is charged twice, ask for the transaction ID and order ID.
+
+Technical issues:
+For app crashes, ask the user to share the error message and device details.
