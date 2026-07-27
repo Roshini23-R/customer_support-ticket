@@ -14,3 +14,4 @@ class TicketRecord(Base):
     response = Column(String, default="")
     resolved = Column(Boolean, default=False)
     needs_review = Column(Boolean, default=False)
+    
