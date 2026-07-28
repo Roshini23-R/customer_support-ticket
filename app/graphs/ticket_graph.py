@@ -59,27 +59,3 @@ def build_ticket_graph():
 
 
 graph = build_ticket_graph()
-
-# --- THE FIX IS HERE ---
-# This tells the playground to ONLY show the "query" box.
-graph.config = {
-    "config_specs": [
-        {
-            "name": "configurable",
-            "type": "dict",
-            "default": {},
-            "schema": {
-                "type": "object",
-                "properties": {
-                    "input": {
-                        "type": "object",
-                        "properties": {
-                            "query": {"type": "string", "title": "Query", "description": "Enter your support question"}
-                        },
-                        "required": ["query"]
-                    }
-                }
-            }
-        }
-    ]
-}
