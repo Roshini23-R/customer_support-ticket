@@ -1,4 +1,5 @@
 from typing import List
+
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -13,43 +14,22 @@ app = FastAPI(title="Ticket Router API")
 templates = Jinja2Templates(directory="app/templates")
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-# In-memory storage
-TICKETS: List[TicketRecord] = []
-
 
 @app.get("/")
 async def root():
     return RedirectResponse(url="/docs")
 
 
-# LangServe endpoints (/ticket/invoke, /ticket/playground)
 add_routes(app, graph, path="/ticket")
 
 
 @app.post("/submit-form-ticket")
 async def submit_ticket_form(query: str = Form(...)):
-    # Run the LangGraph
     result = await graph.ainvoke({"query": query})
-    
-    # CRITICAL FIX: Convert the raw dict result into a TicketRecord object
-    new_ticket = TicketRecord(
-        id=len(TICKETS) + 1,  # Auto-increment ID
-        query=result.get("query", ""),
-        intent=result.get("intent", "general"),
-        sub_intent=result.get("sub_intent"),
-        urgency=result.get("urgency", "low"),
-        confidence=result.get("confidence", 0.0),
-        context=result.get("context", ""),
-        response=result.get("response", "No response generated."),
-        resolved=result.get("resolved", False),
-        needs_review=result.get("needs_review", False),
-    )
-    
-    # Add it to the list
-    TICKETS.append(new_ticket)
-    
-    # Redirect user to the dashboard to see their ticket
-    return RedirectResponse(url="/dashboard", status_code=303)
+    return result
+
+
+TICKETS: List[TicketRecord] = []
 
 
 @app.get("/dashboard")
