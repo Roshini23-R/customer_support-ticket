@@ -1,4 +1,3 @@
-from typing import TypedDict
 from langgraph.graph import StateGraph, START, END
 
 from app.graphs.nodes import (
@@ -10,13 +9,14 @@ from app.graphs.nodes import (
     route_after_retrieval,
 )
 
+from .ticket_input import TicketInput, TicketState
 
-
-from .ticket_input import TicketInput
 
 def build_ticket_graph():
-    # Use TicketInput instead of plain dict so LangServe can infer the input schema.
-    graph = StateGraph(TicketInput)
+    # TicketState carries all fields nodes write to, so nothing gets
+    # dropped on merge. TicketInput keeps the LangServe playground's
+    # input box limited to just `query`.
+    graph = StateGraph(TicketState, input=TicketInput, output=TicketState)
 
     # Nodes
     graph.add_node("classify", classify_node)
@@ -52,6 +52,3 @@ def build_ticket_graph():
 
 
 graph = build_ticket_graph()
-
-
-
