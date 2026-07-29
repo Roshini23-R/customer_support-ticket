@@ -7,11 +7,11 @@ from app.graphs.nodes import (
     route_after_classification,
     route_after_retrieval,
 )
-from .ticket_input import TicketInput  # adjust path
+from .ticket_input import TicketInput
 
 def build_ticket_graph():
-    graph = StateGraph(dict)
-    # nodes and edges same as before
+    graph = StateGraph(TicketInput)
+    # nodes & edges...
     graph.add_node("classify", classify_node)
     graph.add_node("retrieve", retrieve_node)
     graph.add_node("resolve", resolve_node)
