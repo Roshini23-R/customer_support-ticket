@@ -20,15 +20,18 @@ async def root():
     return RedirectResponse(url="/docs")
 
 
+# LangServe routes: /ticket/invoke, /ticket/stream, /ticket/stream_log, /ticket/playground
 add_routes(app, graph, path="/ticket")
 
 
+# Separate endpoint for HTML form submission (not used by playground)
 @app.post("/submit-form-ticket")
 async def submit_ticket_form(query: str = Form(...)):
     result = await graph.ainvoke({"query": query})
     return result
 
 
+# Temporary in-memory list; replace with DB later
 TICKETS: List[TicketRecord] = []
 
 
@@ -53,6 +56,7 @@ async def ticket_detail(request: Request, ticket_id: int):
 async def review_ticket(ticket_id: int, approved: bool = Form(...)):
     for t in TICKETS:
         if t.id == ticket_id:
+            # your model field is `needs_review`
             t.needs_review = not approved
             break
     return {"ok": True, "ticket_id": ticket_id, "approved": approved}
